@@ -1,2 +1,2 @@
 # server-programming-drift86
-Final assignment of Haaga-Helia
+Final assignment of Haaga-Helia's Server Programming course.
