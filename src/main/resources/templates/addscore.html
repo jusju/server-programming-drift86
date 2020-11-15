@@ -15,7 +15,7 @@
 		<h2 class="text-center">Add score</h2>
 		<div>
 			<form th:object="${score}" th:action="@{save}" action="#"
-					method="post">
+					method="post" enctype="multipart/form-data">
 				<div class="form-group">
 					<label for="user">Runner</label> 
 					<input class="form-control" type="text" id="user" th:field="*{user}" /> 
@@ -50,6 +50,10 @@
   					<select class="form-control" id="map" th:field="*{map}">
   						<option th:each="map : ${maps}" th:value="${map.mapId}" th:text="${map.name}"></option>
   					</select>
+  				</div>
+  				<div class="custom-file">
+  					<label class="custom-file-label" for="image">Image for verification</label>
+    				<input class="custom-file-input" id="image" type="file" name="image" accept="image/png, image/jpeg" />
   				</div>
 				<input class="btn btn-success" type="submit" value="Save" />
 			</form>
