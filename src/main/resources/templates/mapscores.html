@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>Drift86 Map</title>
+<link type="text/css" rel="stylesheet" href="../css/bootstrap.min.css"
+	th:href="@{../css/bootstrap.min.css}">
+<link rel="stylesheet" href="../css/fontawesome/css/all.min.css" th:href="@{../css/fontawesome/css/all.min.css}">
+<script src="../js/jquery-3.5.1.min.js" th:src="@{../js/jquery-3.5.1.min.js}"></script>
+<script src="../js/bootstrap.bundle.min.js" th:src="@{../js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<table class="table table-striped">
+			<tr>
+				<th>Runner</th>
+				<th>Points</th>
+				<th>Time</th>
+				<th>Multiplayer</th>
+				<th>Verified</th>
+				<th>Car</th>
+			</tr>
+			<tr th:each="score : ${scores}"
+				th:if="${score.multiplayer == false}">
+				<td th:text="${score.user}"></td>
+				<td th:text="${score.points}"></td>
+				<td th:text="${score.time}"></td>
+				<td th:text="${score.multiplayer}"></td>
+				<td>
+					<i th:if="${score.verified == true}" class="fas fa-check-circle fa-2x"></i>
+					<i th:if="${score.verified == false}" class="fas fa-times-circle fa-2x"></i>
+				</td>
+				<td th:text="${score.car.name}"></td>
+			</tr>
+		</table>
+		
+		<table class="table table-striped">
+			<tr>
+				<th>Runner</th>
+				<th>Points</th>
+				<th>Time</th>
+				<th>Multiplayer</th>
+				<th>Verified</th>
+				<th>Car</th>
+			</tr>
+			<tr th:each="score : ${scores}"
+				th:if="${score.multiplayer == true}">
+				<td th:text="${score.user}"></td>
+				<td th:text="${score.points}"></td>
+				<td th:text="${score.time}"></td>
+				<td th:text="${score.multiplayer}"></td>
+				<td th:text="${score.verified}"></td>
+				<td th:text="${score.car.name}"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
