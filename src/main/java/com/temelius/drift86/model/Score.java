@@ -19,6 +19,7 @@ public class Score {
 	private String time;
 	private boolean multiplayer;
 	private boolean verified;
+	private String photo;
 	
 	@ManyToOne
 	@JoinColumn(name = "mapId")
@@ -42,6 +43,11 @@ public class Score {
 		this.car = car;
 		this.map = map;
 	}
+	
+	public String getPhotoPath() {
+		if (photo == null) return null;
+		return "images/" + photo;
+	}
 
 	public long getId() {
 		return id;
@@ -57,6 +63,14 @@ public class Score {
 
 	public void setUser(String user) {
 		this.user = user;
+	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
 	}
 
 	public String getPoints() {

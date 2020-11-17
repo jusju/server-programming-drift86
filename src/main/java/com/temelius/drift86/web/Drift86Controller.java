@@ -1,5 +1,6 @@
 package com.temelius.drift86.web;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.temelius.drift86.model.*;
+import com.temelius.drift86.util.FileUploadUtil;
 
 @Controller
 public class Drift86Controller {
@@ -70,8 +75,23 @@ public class Drift86Controller {
 	
 	// Save new score
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public String save(Score score) {
+	public String save(Score score, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+		// Initiate FileUploadUtil
+		FileUploadUtil uploadUtil = new FileUploadUtil();
+		
+		// Generate UUID filename with FileUploadUtil method
+		String fileName = uploadUtil.generateUuidForImage(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
+		
+		// Set uuid image name to object
+		score.setPhoto(fileName);
+		
 		srepository.save(score);
+		
+		// set upload path where the image should be uploaded
+		// and finally save the image to the target directory
+		String uploadDir = "src/main/resources/static/images/";
+		FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+		
 		return "redirect:/";
 	}
 	

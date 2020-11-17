@@ -20,6 +20,7 @@
 				<th>Multiplayer</th>
 				<th>Verified</th>
 				<th>Car</th>
+<!-- 				<th>Image</th> -->
 			</tr>
 			<tr th:each="score : ${scores}"
 				th:if="${score.multiplayer == false}">
@@ -32,6 +33,9 @@
 					<i th:if="${score.verified == false}" class="fas fa-times-circle fa-2x"></i>
 				</td>
 				<td th:text="${score.car.name}"></td>
+<!-- 				<td> -->
+<!-- 					<img alt="Verification image" th:src="@{${score.photoPath}}"/> -->
+<!-- 				</td> -->
 			</tr>
 		</table>
 		
@@ -50,7 +54,10 @@
 				<td th:text="${score.points}"></td>
 				<td th:text="${score.time}"></td>
 				<td th:text="${score.multiplayer}"></td>
-				<td th:text="${score.verified}"></td>
+				<td>
+					<i th:if="${score.verified == true}" class="fas fa-check-circle fa-2x"></i>
+					<i th:if="${score.verified == false}" class="fas fa-times-circle fa-2x"></i>
+				</td>
 				<td th:text="${score.car.name}"></td>
 			</tr>
 		</table>
