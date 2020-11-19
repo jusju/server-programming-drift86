@@ -3,6 +3,8 @@ package com.temelius.drift86.web;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -165,11 +167,19 @@ public class Drift86Controller {
      */
     @RequestMapping(value = "saveuser", method = RequestMethod.POST)
     public String saveUser(@Valid @ModelAttribute("userdto") UserDto userDto, BindingResult bindingResult) {
+    	String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     	if (!bindingResult.hasErrors()) { // validation errors
     		if (userDto.getPassword().equals(userDto.getPasswordCheck())) { // check password match		
 	    		String pwd = userDto.getPassword();
 		    	BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
 		    	String hashPwd = bc.encode(pwd);
+		    	
+		    	Pattern pattern = Pattern.compile(emailRegex);
+		    	Matcher matcher = pattern.matcher(userDto.getEmail());
+		    	if(!matcher.matches()) {
+		    		bindingResult.rejectValue("email", "err.email", "Email doesn't meet requirements");
+		    		return "register";
+		    	}
 	
 		    	User newUser = new User();
 		    	newUser.setPasswordHash(hashPwd);
