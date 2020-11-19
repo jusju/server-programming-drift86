@@ -4,6 +4,7 @@
 		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Drift86 Scoreboard</title>
 <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"
 	th:href="@{css/bootstrap.min.css}">
@@ -14,8 +15,9 @@
 <body>
 	<div class="container">
 	<h1>Sign-up</h1>
+	<a th:href="@{/}">Back to index</a>
      <div class="col-md-4">
-		<form th:object="${userdto}" th:action="@{/saveuser}" action="#" method="post">
+		<form class="formi" th:object="${userdto}" th:action="@{/saveuser}" action="#" method="post">
 			<div>
 				<label> Username :<input type="text" th:field="*{username}" class="form-control"/></label>
 				<p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</p>	

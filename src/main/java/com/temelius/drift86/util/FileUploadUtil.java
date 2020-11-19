@@ -13,14 +13,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.uuid.Generators;
 
+/**
+ * 
+ * Utility class for file upload
+ *
+ */
+
 public class FileUploadUtil {
 	public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+		// Get specified destination directory
 		Path uploadPath = Paths.get(uploadDir);
 		
+		// If the directory path does not exist, create missing directories
 		if (!Files.exists(uploadPath)) {
 			Files.createDirectories(uploadPath);
 		}
 		
+		// Try to copy multipartfile to new destination
 		try (InputStream inputStream = multipartFile.getInputStream()){
 			Path filePath = uploadPath.resolve(fileName);
 			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -29,8 +38,12 @@ public class FileUploadUtil {
 		}
 	}
 	
+	// Generate uuid for newly uploaded image
 	public String generateUuidForImage(String imageName) {
+		// get extension of the file (does not check binaries, only the filename extension)
 		String extension = FilenameUtils.getExtension(imageName);
+		
+		// generate time based uuid and return string
 		UUID uuid = Generators.timeBasedGenerator().generate();
 		
 		return uuid + "." + extension;

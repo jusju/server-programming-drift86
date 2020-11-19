@@ -4,6 +4,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+/**
+ * 
+ * User Data Transfer Object
+ *
+ */
+
 public class UserDto {
     @NotEmpty
     @Size(min=5, max=30)

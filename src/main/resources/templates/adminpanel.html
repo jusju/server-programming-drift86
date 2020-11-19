@@ -4,6 +4,7 @@
 		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Admin Panel</title>
 <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"
 	th:href="@{css/bootstrap.min.css}">
@@ -14,7 +15,7 @@
 <body>
 	<div class="container">
 		<h1>Admin Panel</h1>
-		
+		<a th:href="@{/}">Back to index</a>
 		<h2>Unverified Scores</h2>
 		<h3 th:if="${#lists.isEmpty(unverifiedScores)}">Nothing to verify!</h3>
 		<table class="table table-striped" th:unless="${#lists.isEmpty(unverifiedScores)}">

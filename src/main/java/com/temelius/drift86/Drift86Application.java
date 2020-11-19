@@ -78,7 +78,9 @@ public class Drift86Application {
 			mrepository.save(new Map("Coal Mine"));
 			
 			//srepository.deleteAll();
-			srepository.save(new Score("Temecchi", "518365", "10:06:96", false, true, crepository.findByName("EG86").get(0), mrepository.findByName("Gunma").get(0)));
+			srepository.save(new Score("Temecchi", "700365", "10:06:96", false, true, crepository.findByName("EG86").get(0), mrepository.findByName("Gunma").get(0)));
+			srepository.save(new Score("jaska88", "315365", "14:07:92", false, true, crepository.findByName("EG86").get(0), mrepository.findByName("Gunma").get(0)));
+			srepository.save(new Score("simpgryn", "635365", "11:06:96", false, true, crepository.findByName("TG68").get(0), mrepository.findByName("Gunma").get(0)));
 			srepository.save(new Score("simpgryn", "328017", "12:06:87", true, true, crepository.findByName("XR-7").get(0), mrepository.findByName("Hydropower").get(0)));
 			srepository.save(new Score("jaska88", "238187", "11:05:83", true, true, crepository.findByName("Imprezo").get(0), mrepository.findByName("Gunma").get(0)));
 			

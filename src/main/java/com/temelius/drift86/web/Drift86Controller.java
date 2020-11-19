@@ -52,6 +52,7 @@ public class Drift86Controller {
 	@RequestMapping(value = "/scores/{map}")
 	public String scoresByMap(@PathVariable("map") long mapId, Model model) {
 		Map map = mrepository.findById(mapId).get();
+		model.addAttribute("map", map);
 		model.addAttribute("scores", srepository.findAllByMapOrderByPointsDesc(map));
 		return "mapscores";
 	}
@@ -160,26 +161,36 @@ public class Drift86Controller {
      */
     @RequestMapping(value = "saveuser", method = RequestMethod.POST)
     public String saveUser(@Valid @ModelAttribute("userdto") UserDto userDto, BindingResult bindingResult) {
+    	// Email validation regular expression
     	String emailRegex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-    	if (!bindingResult.hasErrors()) { // validation errors
-    		if (userDto.getPassword().equals(userDto.getPasswordCheck())) { // check password match		
-	    		String pwd = userDto.getPassword();
-		    	BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+    	
+    	// validation errors
+    	if (!bindingResult.hasErrors()) { 
+    		// check password match
+    		if (userDto.getPassword().equals(userDto.getPasswordCheck())) { 		
+	    		// encrypt password with BCrypt
+    			String pwd = userDto.getPassword();
+	    		BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
 		    	String hashPwd = bc.encode(pwd);
 		    	
+		    	// Check email with regex pattern
+		    	// and return error if it does not match
 		    	Pattern pattern = Pattern.compile(emailRegex);
 		    	Matcher matcher = pattern.matcher(userDto.getEmail());
 		    	if(!matcher.matches()) {
 		    		bindingResult.rejectValue("email", "err.email", "Email doesn't meet requirements");
 		    		return "register";
 		    	}
-	
+		    	
+		    	// set values to user object
 		    	User newUser = new User();
 		    	newUser.setPasswordHash(hashPwd);
 		    	newUser.setUsername(userDto.getUsername());
 		    	newUser.setEmail(userDto.getEmail());
 		    	newUser.setRole("USER");
-		    	if (urepository.findByUsername(userDto.getUsername()) == null) { // Check if user exists
+		    	
+		    	// Check if user exists
+		    	if (urepository.findByUsername(userDto.getUsername()) == null) { 
 		    		urepository.save(newUser);
 		    	}
 		    	else {
