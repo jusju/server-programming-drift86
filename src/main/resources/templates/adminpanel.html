@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:th="http://www.thymeleaf.org"
+		xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css"
+	th:href="@{css/bootstrap.min.css}">
+<link type="text/css" rel="stylesheet" href="css/main.css" th:href="@{css/main.css}">
+<script src="js/jquery-3.5.1.min.js" th:src="@{js/jquery-3.5.1.min.js}"></script>
+<script src="js/bootstrap.bundle.min.js" th:src="@{js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>Admin Panel</h1>
+		
+		<h2>Unverified Scores</h2>
+		<h3 th:if="${#lists.isEmpty(unverifiedScores)}">Nothing to verify!</h3>
+		<table class="table table-striped" th:unless="${#lists.isEmpty(unverifiedScores)}">
+			<tr>
+			<th>User</th>
+			<th>Points</th>
+			<th>Time</th>
+			<th>Multiplayer</th>
+			<th>Car</th>
+			<th>Map</th>
+			<th>Image</th>
+			<th></th>
+			</tr>
+			<tr th:each="score : ${unverifiedScores}">
+					<td th:text="${score.user}"></td>
+					<td th:text="${score.points}"></td>
+					<td th:text="${score.time}"></td>
+					<td th:text="${score.multiplayer}"></td>
+					<td th:text="${score.car.name}"></td>
+					<td th:text="${score.map.name}"></td>
+					<td>
+						<img alt="Verification image" th:src="@{${score.photoPath}}"/>
+					</td>
+					<td>
+						<a class="btn btn-primary" th:href="@{/verify/{id}(id=${score.id})}">Verify</a>
+					</td>
+					<td>
+						<a class="btn btn-danger" th:href="@{/delete/{id}(id=${score.id})}">Delete</a>
+					</td>
+				</tr>
+		</table>
+		
+		<h2>Users</h2>
+		<table class="table table-striped">
+			<tr>
+				<th>Role</th>
+				<th>Username</th>
+				<th>Email</th>
+			</tr>
+			<tr th:each="user : ${users}">
+				<td th:text="${user.role}"></td>
+				<td th:text="${user.username}"></td>
+				<td th:text="${user.email}"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
