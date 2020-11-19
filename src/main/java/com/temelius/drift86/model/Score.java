@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -14,7 +15,8 @@ public class Score {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	private String user;
+	//@Column(name = "`user`")
+	private String myuser;
 	private String points;
 	private String time;
 	private boolean multiplayer;
@@ -33,9 +35,9 @@ public class Score {
 	
 	public Score() {}
 	
-	public Score(String user, String points, String time, boolean multiplayer, boolean verified, Car car, Map map) {
+	public Score(String myuser, String points, String time, boolean multiplayer, boolean verified, Car car, Map map) {
 		super();
-		this.user = user;
+		this.myuser = myuser;
 		this.points = points;
 		this.time = time;
 		this.multiplayer = multiplayer;
@@ -57,12 +59,12 @@ public class Score {
 		this.id = id;
 	}
 
-	public String getUser() {
-		return user;
+	public String getMyuser() {
+		return myuser;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setMyuser(String myuser) {
+		this.myuser = myuser;
 	}
 
 	public String getPhoto() {
