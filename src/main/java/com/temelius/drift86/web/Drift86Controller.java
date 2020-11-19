@@ -4,11 +4,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +35,9 @@ public class Drift86Controller {
 	
 	@Autowired
 	private MapRepository mrepository;
+	
+	@Autowired
+	private UserRepository urepository;
 	
 	// Show index page
 	@RequestMapping(value = {"/", "/index"})
@@ -89,7 +98,7 @@ public class Drift86Controller {
 		
 		// set upload path where the image should be uploaded
 		// and finally save the image to the target directory
-		String uploadDir = "src/main/resources/static/images/";
+		String uploadDir = "images/";
 		FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		
 		return "redirect:/";
@@ -105,6 +114,7 @@ public class Drift86Controller {
 	
 	// Edit specified score
 	@RequestMapping(value = "/edit/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public String editScore(@PathVariable("id") Long scoreId, Model model) {
 		model.addAttribute("score", srepository.findById(scoreId));
 		model.addAttribute("cars", crepository.findAll());
@@ -112,9 +122,77 @@ public class Drift86Controller {
 		return "editscore";
 	}
 	
+	@RequestMapping(value = "/admin")
+	public String adminPanel(Model model) {
+		model.addAttribute("unverifiedScores", srepository.findAllByVerified(false));
+		model.addAttribute("users", urepository.findAllByOrderByRoleAsc());
+		return "adminpanel";
+	}
+	
+	@GetMapping(value="/verify/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public String verifyScore(@PathVariable("id") Long scoreId) {
+		Score score = srepository.findById(scoreId).get();
+		score.setVerified(true);
+		srepository.save(score);
+		return "redirect:../admin";
+	}
+	
 	// Login page
 	@RequestMapping(value = "/login")
 	public String login() {
 		return "login";
 	}
+	
+	@RequestMapping(value = "/logout")
+	public String logout() {
+		return "logout";
+	}
+	
+    @RequestMapping(value = "/register")
+    public String addUser(Model model){
+    	model.addAttribute("userdto", new UserDto());
+        return "register";
+    }
+    
+    /**
+     * Create new user
+     * Check if user already exists & form validation
+     * 
+     * @param signupForm
+     * @param bindingResult
+     * @return
+     */
+    @RequestMapping(value = "saveuser", method = RequestMethod.POST)
+    public String saveUser(@Valid @ModelAttribute("userdto") UserDto userDto, BindingResult bindingResult) {
+    	if (!bindingResult.hasErrors()) { // validation errors
+    		if (userDto.getPassword().equals(userDto.getPasswordCheck())) { // check password match		
+	    		String pwd = userDto.getPassword();
+		    	BCryptPasswordEncoder bc = new BCryptPasswordEncoder();
+		    	String hashPwd = bc.encode(pwd);
+	
+		    	User newUser = new User();
+		    	newUser.setPasswordHash(hashPwd);
+		    	newUser.setUsername(userDto.getUsername());
+		    	newUser.setEmail(userDto.getEmail());
+		    	newUser.setRole("USER");
+		    	if (urepository.findByUsername(userDto.getUsername()) == null) { // Check if user exists
+		    		urepository.save(newUser);
+		    	}
+		    	else {
+	    			bindingResult.rejectValue("username", "err.username", "Username already exists");    	
+	    			return "register";		    		
+		    	}
+    		}
+    		else {
+    			bindingResult.rejectValue("passwordCheck", "err.passCheck", "Passwords does not match");    	
+    			return "register";
+    		}
+    	}
+    	else {
+    		return "register";
+    	}
+    	return "redirect:/login";    	
+    }    
+    
 }
