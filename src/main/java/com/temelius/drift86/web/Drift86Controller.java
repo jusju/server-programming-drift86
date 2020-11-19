@@ -1,8 +1,6 @@
 package com.temelius.drift86.web;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.temelius.drift86.model.*;
@@ -46,12 +43,16 @@ public class Drift86Controller {
 	public String index(Model model) {
 		return "index";
 	}
-
+	
+	/*
+	 * Score related methods
+	 */
+	
 	// Show all scores by map
 	@RequestMapping(value = "/scores/{map}")
 	public String scoresByMap(@PathVariable("map") long mapId, Model model) {
 		Map map = mrepository.findById(mapId).get();
-		model.addAttribute("scores", srepository.findAllByMap(map));
+		model.addAttribute("scores", srepository.findAllByMapOrderByPointsDesc(map));
 		return "mapscores";
 	}
 	
@@ -62,18 +63,6 @@ public class Drift86Controller {
 		return "maps";
 	}
 	
-	// RESTful - Get all scores by map
-	@RequestMapping(value = "/api/scores/{map}", method = RequestMethod.GET)
-	public @ResponseBody List<Score> scoresByMapRest(@PathVariable("map") long mapId ) {
-		Map map = mrepository.findById(mapId).get();
-		return (List<Score>) srepository.findAllByMap(map);
-	}
-	
-	// RESTful - get score by id
-	@RequestMapping(value = "/api/score/{id}", method = RequestMethod.GET)
-	public @ResponseBody Optional<Score> findScoreRest(@PathVariable("id") Long scoreId) {
-		return srepository.findById(scoreId);
-	}
 	
 	// Add new score
 	@RequestMapping(value = "/add")
@@ -124,13 +113,6 @@ public class Drift86Controller {
 		return "editscore";
 	}
 	
-	@RequestMapping(value = "/admin")
-	public String adminPanel(Model model) {
-		model.addAttribute("unverifiedScores", srepository.findAllByVerified(false));
-		model.addAttribute("users", urepository.findAllByOrderByRoleAsc());
-		return "adminpanel";
-	}
-	
 	@GetMapping(value="/verify/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public String verifyScore(@PathVariable("id") Long scoreId) {
@@ -138,6 +120,17 @@ public class Drift86Controller {
 		score.setVerified(true);
 		srepository.save(score);
 		return "redirect:../admin";
+	}
+	
+	/*
+	 * User related methods
+	 */
+	
+	@RequestMapping(value = "/admin")
+	public String adminPanel(Model model) {
+		model.addAttribute("unverifiedScores", srepository.findAllByVerified(false));
+		model.addAttribute("users", urepository.findAllByOrderByRoleAsc());
+		return "adminpanel";
 	}
 	
 	// Login page
