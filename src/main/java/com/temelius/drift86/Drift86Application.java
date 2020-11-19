@@ -86,6 +86,7 @@ public class Drift86Application {
 			
 			//urepository.deleteAll();
 			// Passwords are role names in lowercase
+			urepository.deleteAll();
 			urepository.save(new User("Temecchi", "$2a$10$DNqCgrBaLCYocZfbalRSBOFybA67wQ3krWHx/6A7Uns0VvnEu9Q/q", "ADMIN", "admin@example.com"));
 			urepository.save(new User("simpgryn", "$2a$10$BEwpmglV.a83YYAE9Eo17uDpqd9T4FGvsbTXhv6itrSSYvQzyLFLS", "MODERATOR", "moderator@example.com"));
 			urepository.save(new User("jaska88", "$2a$10$DqP4xmuLPCPre2pz0WcECu5j3SKlzWJSGME7FvfmnWTdsu5N3hkC6", "USER", "user@example.com"));
